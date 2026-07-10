@@ -8,35 +8,35 @@ Sentinel Analytics is an end-to-end Machine Learning Capstone project designed t
 
 ```mermaid
 flowchart TD
-    subgraph Data Pipeline
-        CC[creditcard_demo.csv] --> Pre[Data Preprocessing]
-        Pre --> Scalers[Amount Scaler / Time StandardScaler]
-        Scalers --> Split[Train/Test Stratified Split]
-        Split --> SMOTE[SMOTE Minority Oversampling]
+    subgraph "Data Pipeline"
+        CC["creditcard_demo.csv"] --> Pre["Data Preprocessing"]
+        Pre --> Scalers["Amount Scaler / Time StandardScaler"]
+        Scalers --> Split["Train/Test Stratified Split"]
+        Split --> SMOTE["SMOTE Minority Oversampling"]
     end
 
-    subgraph Model Training
-        SMOTE --> XGB[XGBoost Classifier]
-        SMOTE --> RF[Random Forest]
-        SMOTE --> LR[Logistic Regression]
-        SMOTE --> NN[TensorFlow Neural Net]
+    subgraph "Model Training"
+        SMOTE --> XGB["XGBoost Classifier"]
+        SMOTE --> RF["Random Forest"]
+        SMOTE --> LR["Logistic Regression"]
+        SMOTE --> NN["TensorFlow Neural Net"]
         
-        XGB --> SaveXGB[xgboost_model.pkl / best_classical_model.pkl]
-        RF --> SaveRF[random_forest_model.pkl]
-        LR --> SaveLR[logistic_regression_model.pkl]
-        NN --> SaveNN[neural_network_model.keras]
+        XGB --> SaveXGB["xgboost_model.pkl / best_classical_model.pkl"]
+        RF --> SaveRF["random_forest_model.pkl"]
+        LR --> SaveLR["logistic_regression_model.pkl"]
+        NN --> SaveNN["neural_network_model.keras"]
     end
 
-    subgraph Web App Backend (Flask)
-        SaveXGB & SaveRF & SaveLR & SaveNN & Scalers --> Flask[Flask Web Server: app.py]
+    subgraph "Web App Backend (Flask)"
+        SaveXGB & SaveRF & SaveLR & SaveNN & Scalers --> Flask["Flask Web Server (app.py)"]
         CC --> Flask
     end
 
-    subgraph Frontend Dashboard (SPA)
-        Flask -->|Serve UI| SPA[HTML/JS/Tailwind Dashboard]
-        SPA -->|Single Prediction Request| API_Pred[/api/predict]
-        SPA -->|Batch CSV Upload| API_Batch[/api/predict-batch]
-        SPA -->|Visual Analytics Fetch| API_Stats[/api/dataset-distributions & /api/stats]
+    subgraph "Frontend Dashboard (SPA)"
+        Flask -->| "Serve UI" | SPA["HTML/JS/Tailwind Dashboard"]
+        SPA -->| "Single Prediction Request" | API_Pred["/api/predict"]
+        SPA -->| "Batch CSV Upload" | API_Batch["/api/predict-batch"]
+        SPA -->| "Visual Analytics Fetch" | API_Stats["/api/dataset-distributions & /api/stats"]
         
         API_Pred & API_Batch & API_Stats --> Flask
     end
