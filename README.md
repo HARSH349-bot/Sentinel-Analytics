@@ -33,12 +33,14 @@ flowchart TD
     end
 
     subgraph "Frontend Dashboard (SPA)"
-        Flask -->| "Serve UI" | SPA["HTML/JS/Tailwind Dashboard"]
-        SPA -->| "Single Prediction Request" | API_Pred["/api/predict"]
-        SPA -->| "Batch CSV Upload" | API_Batch["/api/predict-batch"]
-        SPA -->| "Visual Analytics Fetch" | API_Stats["/api/dataset-distributions & /api/stats"]
+        Flask -->|Serve UI| SPA["HTML/JS/Tailwind Dashboard"]
+        SPA -->|Single Prediction Request| API_Pred["/api/predict"]
+        SPA -->|Batch CSV Upload| API_Batch["/api/predict-batch"]
+        SPA -->|Visual Analytics Fetch| API_Stats["/api/dataset-distributions and /api/stats"]
         
-        API_Pred & API_Batch & API_Stats --> Flask
+        API_Pred --> Flask
+        API_Batch --> Flask
+        API_Stats --> Flask
     end
 ```
 
