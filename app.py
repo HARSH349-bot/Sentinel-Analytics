@@ -409,6 +409,7 @@ def predict_batch():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+load_resources()
+
 if __name__ == "__main__":
-    load_resources()
     app.run(host="127.0.0.1", port=5000, debug=True)

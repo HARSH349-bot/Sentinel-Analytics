@@ -1,0 +1,9 @@
+Flask
+streamlit
+pandas
+numpy
+scikit-learn
+scipy
+xgboost
+joblib
+plotly
