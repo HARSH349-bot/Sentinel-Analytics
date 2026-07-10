@@ -1,0 +1,1689 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Sentinel Analytics | AI-Powered Fraud Detection</title>
+    <!-- Tailwind CSS with Forms and Containers plugins -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <!-- Plotly.js for interactive charting -->
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+    
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#c6c5d4",
+                        "on-primary-container": "#838391",
+                        "secondary-fixed": "#e2e1f4",
+                        "secondary-container": "#474857",
+                        "tertiary": "#9acbff",
+                        "outline-variant": "#47464c",
+                        "on-tertiary": "#003355",
+                        "surface-bright": "#37393c",
+                        "brand-blue": "#378ADD",
+                        "on-primary": "#2f303b",
+                        "background": "#111416",
+                        "surface-variant": "#333537",
+                        "tertiary-fixed": "#cfe5ff",
+                        "secondary-fixed-dim": "#c5c5d8",
+                        "on-surface-variant": "#c8c5cc",
+                        "primary-fixed": "#e2e1f1",
+                        "on-background": "#e2e2e5",
+                        "accent-amber": "#EF9F27",
+                        "on-error-container": "#ffdad6",
+                        "surface-container-lowest": "#0c0e11",
+                        "accent-muted": "#B4B2A9",
+                        "surface-container-high": "#282a2d",
+                        "on-primary-fixed-variant": "#454652",
+                        "primary-container": "#1a1b26",
+                        "surface-container-highest": "#333537",
+                        "outline": "#919096",
+                        "surface-container-low": "#1a1c1e",
+                        "on-primary-fixed": "#1a1b26",
+                        "accent-purple": "#7F77DD",
+                        "status-danger": "#E24B4A",
+                        "on-surface": "#e2e2e5",
+                        "on-secondary": "#2e2f3e",
+                        "on-error": "#690005",
+                        "surface-tint": "#c6c5d4",
+                        "tertiary-fixed-dim": "#9acbff",
+                        "on-tertiary-container": "#5588b9",
+                        "on-secondary-fixed": "#191b28",
+                        "status-success": "#5DCAA5",
+                        "inverse-primary": "#5d5d6a",
+                        "on-tertiary-fixed-variant": "#054a77",
+                        "inverse-on-surface": "#2f3133",
+                        "on-secondary-fixed-variant": "#454655",
+                        "primary-fixed-dim": "#c6c5d4",
+                        "error-container": "#93000a",
+                        "surface-container": "#1e2022",
+                        "inverse-surface": "#e2e2e5",
+                        "on-tertiary-fixed": "#001d34",
+                        "surface": "#111416",
+                        "on-secondary-container": "#b7b7c9",
+                        "surface-dim": "#111416",
+                        "secondary": "#c5c5d8",
+                        "tertiary-container": "#001d34",
+                        "accent-coral": "#F0997B",
+                        "accent-pink": "#D4537E",
+                        "error": "#ffb4ab"
+                    },
+                    "spacing": {
+                        "xl": "32px",
+                        "sidebar-gap": "10px",
+                        "sidebar-item-padding": "10px 14px",
+                        "lg": "24px",
+                        "xs": "4px",
+                        "base": "4px",
+                        "md": "16px",
+                        "container-margin": "20px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "metric-display": ["Inter"],
+                        "label-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "body-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "body-lg": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "label-lg": ["14px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                        "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                        "metric-display": ["40px", {"lineHeight": "1.1", "fontWeight": "600"}],
+                        "label-md": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-sm": ["18px", {"lineHeight": "1.5", "fontWeight": "500"}],
+                        "body-md": ["14px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+        .glass-card {
+            background: rgba(30, 32, 34, 0.6);
+            backdrop-filter: blur(12px);
+            border: 0.5px solid #3A3B4A;
+        }
+        .hover-lift {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .hover-lift:hover {
+            transform: translateY(-4px);
+            border-color: #c6c5d4;
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+        }
+        .scanning-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #c6c5d4, transparent);
+            top: 0;
+            animation: scan 3s linear infinite;
+        }
+        @keyframes scan {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar for tables */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111416;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #47464c;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #919096;
+        }
+        .pulse-border {
+            animation: borderPulse 2s infinite alternate;
+        }
+        @keyframes borderPulse {
+            0% { border-color: rgba(198, 197, 212, 0.2); }
+            100% { border-color: rgba(198, 197, 212, 0.8); }
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md overflow-x-hidden">
+<div class="flex h-screen overflow-hidden">
+    <!-- Sidebar Navigation -->
+    <aside class="w-64 h-full border-r border-outline-variant bg-background flex flex-col p-md z-50">
+        <div class="mb-xl px-sm">
+            <div class="font-headline-sm text-headline-sm font-bold text-on-surface flex items-center gap-sm cursor-pointer" onclick="navigateTo('page-home', 'Sentinel Analytics')">
+                <span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">security</span>
+                Sentinel Analytics
+            </div>
+            <div class="text-label-md text-on-surface-variant mt-xs">Fraud Detection Suite</div>
+        </div>
+        <nav class="flex-1 flex flex-col gap-sidebar-gap overflow-y-auto">
+            <a class="bg-secondary-container text-on-secondary-container rounded-lg p-sidebar-item-padding flex items-center gap-md hover:translate-y-[-2px] transition-all duration-200 active:scale-95 cursor-pointer" 
+               data-page="page-home" onclick="navigateTo('page-home', 'Sentinel Analytics')">
+                <span class="material-symbols-outlined">dashboard</span>
+                <span class="font-label-lg text-label-lg">Home</span>
+            </a>
+            <a class="text-on-surface-variant hover:bg-surface-variant hover:text-on-surface p-sidebar-item-padding rounded-lg flex items-center gap-md hover:translate-y-[-2px] transition-all duration-200 active:scale-95 cursor-pointer" 
+               data-page="page-live-prediction" onclick="navigateTo('page-live-prediction', 'Fraud Prediction')">
+                <span class="material-symbols-outlined">person_search</span>
+                <span class="font-label-lg text-label-lg">Transaction Profile</span>
+            </a>
+            <a class="text-on-surface-variant hover:bg-surface-variant hover:text-on-surface p-sidebar-item-padding rounded-lg flex items-center gap-md hover:translate-y-[-2px] transition-all duration-200 active:scale-95 cursor-pointer" 
+               data-page="page-live-prediction" onclick="navigateTo('page-live-prediction', 'Fraud Prediction')">
+                <span class="material-symbols-outlined">online_prediction</span>
+                <span class="font-label-lg text-label-lg">Fraud Prediction</span>
+            </a>
+            <a class="text-on-surface-variant hover:bg-surface-variant hover:text-on-surface p-sidebar-item-padding rounded-lg flex items-center gap-md hover:translate-y-[-2px] transition-all duration-200 active:scale-95 cursor-pointer" 
+               data-page="page-dataset-overview" onclick="navigateTo('page-dataset-overview', 'Dataset Overview')">
+                <span class="material-symbols-outlined">analytics</span>
+                <span class="font-label-lg text-label-lg">Anomaly Detection</span>
+            </a>
+            <a class="text-on-surface-variant hover:bg-surface-variant hover:text-on-surface p-sidebar-item-padding rounded-lg flex items-center gap-md hover:translate-y-[-2px] transition-all duration-200 active:scale-95 cursor-pointer" 
+               data-page="page-live-prediction" onclick="navigateTo('page-live-prediction', 'Risk Score Prediction')">
+                <span class="material-symbols-outlined">speed</span>
+                <span class="font-label-lg text-label-lg">Risk Score Prediction</span>
+            </a>
+            <a class="text-on-surface-variant hover:bg-surface-variant hover:text-on-surface p-sidebar-item-padding rounded-lg flex items-center gap-md hover:translate-y-[-2px] transition-all duration-200 active:scale-95 cursor-pointer" 
+               data-page="page-dataset-overview" onclick="navigateTo('page-dataset-overview', 'Overall Fraud Index')">
+                <span class="material-symbols-outlined">assessment</span>
+                <span class="font-label-lg text-label-lg">Overall Fraud Index</span>
+            </a>
+            <a class="text-on-surface-variant hover:bg-surface-variant hover:text-on-surface p-sidebar-item-padding rounded-lg flex items-center gap-md hover:translate-y-[-2px] transition-all duration-200 active:scale-95 cursor-pointer" 
+               data-page="page-dataset-overview" onclick="navigateTo('page-dataset-overview', 'Dataset Overview')">
+                <span class="material-symbols-outlined">query_stats</span>
+                <span class="font-label-lg text-label-lg">Visual Analytics</span>
+            </a>
+            <a class="text-on-surface-variant hover:bg-surface-variant hover:text-on-surface p-sidebar-item-padding rounded-lg flex items-center gap-md hover:translate-y-[-2px] transition-all duration-200 active:scale-95 cursor-pointer" 
+               data-page="page-batch-prediction" onclick="navigateTo('page-batch-prediction', 'Batch Predictor & CSV Report')">
+                <span class="material-symbols-outlined">picture_as_pdf</span>
+                <span class="font-label-lg text-label-lg">PDF Fraud Report</span>
+            </a>
+            <a class="text-on-surface-variant hover:bg-surface-variant hover:text-on-surface p-sidebar-item-padding rounded-lg flex items-center gap-md hover:translate-y-[-2px] transition-all duration-200 active:scale-95 cursor-pointer" 
+               data-page="page-model-performance" onclick="navigateTo('page-model-performance', 'Model Performance')">
+                <span class="material-symbols-outlined">settings</span>
+                <span class="font-label-lg text-label-lg">Model Settings</span>
+            </a>
+            <a class="text-on-surface-variant hover:bg-surface-variant hover:text-on-surface p-sidebar-item-padding rounded-lg flex items-center gap-md hover:translate-y-[-2px] transition-all duration-200 active:scale-95 cursor-pointer" 
+               data-page="page-about" onclick="navigateTo('page-about', 'About the Project')">
+                <span class="material-symbols-outlined">info</span>
+                <span class="font-label-lg text-label-lg">About</span>
+            </a>
+        </nav>
+        <div class="mt-auto pt-md border-t border-outline-variant">
+            <button onclick="navigateTo('page-live-prediction', 'Fraud Prediction')" class="w-full bg-primary text-on-primary py-sm rounded-lg font-label-lg text-label-lg active:scale-95 transition-transform hover:brightness-110">
+                Review High Risk
+            </button>
+        </div>
+    </aside>
+
+    <!-- Main Canvas -->
+    <main class="flex-1 overflow-y-auto relative bg-surface-container-lowest flex flex-col justify-between">
+        <div>
+            <!-- Top App Bar (Small) -->
+            <header class="flex justify-between items-center px-lg py-sm w-full border-b border-outline-variant bg-surface-container-lowest sticky top-0 z-40">
+                <div id="header-title" class="font-headline-sm text-headline-sm font-black text-on-surface">
+                    Sentinel Analytics
+                </div>
+                <div class="flex items-center gap-md">
+                    <div class="bg-surface-container rounded-full px-md py-xs flex items-center gap-sm border border-outline-variant">
+                        <span class="material-symbols-outlined text-on-surface-variant">search</span>
+                        <input id="global-search" class="bg-transparent border-none focus:ring-0 text-body-md text-on-surface w-64 p-0 placeholder-on-surface-variant" placeholder="Search transactions..." type="text"/>
+                    </div>
+                    <div class="flex gap-sm">
+                        <span class="material-symbols-outlined p-xs cursor-pointer transition-opacity active:opacity-70 text-on-surface-variant hover:text-primary">notifications</span>
+                        <span class="material-symbols-outlined p-xs cursor-pointer transition-opacity active:opacity-70 text-on-surface-variant hover:text-primary">account_circle</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="max-w-7xl mx-auto p-container-margin">
+                
+                <!-- ==================== HOME PAGE ==================== -->
+                <div id="page-home" class="page-content animate-fade-in space-y-xl">
+                    <!-- Hero Section -->
+                    <section class="flex flex-col items-center text-center py-xl">
+                        <h1 class="font-display-lg text-display-lg text-on-background mb-sm tracking-tight">Sentinel Analytics</h1>
+                        <p class="font-headline-sm text-headline-sm text-on-surface-variant max-w-2xl">AI-Powered Credit Card Fraud Detection</p>
+                        <div class="relative mt-xl w-full max-w-lg aspect-video glass-card rounded-xl overflow-hidden flex items-center justify-center group border border-outline-variant shadow-2xl">
+                            <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent-purple/5"></div>
+                            <!-- Security Graphic Animation -->
+                            <div class="relative z-10 flex flex-col items-center gap-sm">
+                                <span class="material-symbols-outlined text-primary" style="font-size: 80px; font-variation-settings: 'FILL' 1;">shield</span>
+                                <div class="h-1 w-32 bg-primary/20 rounded-full overflow-hidden relative">
+                                    <div class="absolute inset-0 bg-primary w-1/3 animate-[loading_2s_infinite]"></div>
+                                </div>
+                            </div>
+                            <div class="scanning-line"></div>
+                            <!-- UI Decoration -->
+                            <div class="absolute bottom-4 right-4 flex gap-xs">
+                                <div class="w-1.5 h-1.5 rounded-full bg-status-success animate-pulse"></div>
+                                <div class="w-1.5 h-1.5 rounded-full bg-primary/20"></div>
+                                <div class="w-1.5 h-1.5 rounded-full bg-primary/20"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Stats Row -->
+                    <section class="grid grid-cols-1 md:grid-cols-3 gap-lg mb-xl">
+                        <div class="glass-card p-lg rounded-xl hover-lift flex flex-col gap-sm">
+                            <div class="flex justify-between items-start">
+                                <span class="text-label-lg font-label-lg text-on-surface-variant">Total Dataset Samples</span>
+                                <span class="material-symbols-outlined text-primary bg-primary/10 p-xs rounded-md">account_balance_wallet</span>
+                            </div>
+                            <div class="text-metric-display font-metric-display text-on-surface counter" id="stat-total" data-target="8040">0</div>
+                            <div class="text-label-md text-status-success flex items-center gap-xs">
+                                <span class="material-symbols-outlined text-sm">trending_up</span>
+                                Complete validation data
+                            </div>
+                        </div>
+                        <div class="glass-card p-lg rounded-xl hover-lift flex flex-col gap-sm border-l-2 border-l-status-success">
+                            <div class="flex justify-between items-start">
+                                <span class="text-label-lg font-label-lg text-on-surface-variant">Best Model Accuracy</span>
+                                <span class="material-symbols-outlined text-status-success bg-status-success/10 p-xs rounded-md">verified_user</span>
+                            </div>
+                            <div class="text-metric-display font-metric-display text-on-surface counter" id="stat-accuracy" data-decimal="2" data-target="99.38">0</div>
+                            <div class="text-label-md text-on-surface-variant">Precision recall optimized</div>
+                        </div>
+                        <div class="glass-card p-lg rounded-xl hover-lift flex flex-col gap-sm">
+                            <div class="flex justify-between items-start">
+                                <span class="text-label-lg font-label-lg text-on-surface-variant">Avg Model Latency</span>
+                                <span class="material-symbols-outlined text-accent-amber bg-accent-amber/10 p-xs rounded-md">bolt</span>
+                            </div>
+                            <div class="text-metric-display font-metric-display text-on-surface">&lt; 35ms</div>
+                            <div class="text-label-md text-on-surface-variant flex items-center gap-xs">
+                                <span class="material-symbols-outlined text-sm">network_ping</span>
+                                In-memory model inference
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Navigation Grid -->
+                    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-lg mb-xl">
+                        <a class="glass-card p-lg rounded-xl hover-lift flex flex-col items-center text-center gap-md group cursor-pointer" onclick="navigateTo('page-dataset-overview', 'Dataset Overview')">
+                            <div class="w-16 h-16 rounded-full bg-secondary-container flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary transition-colors">
+                                <span class="material-symbols-outlined text-display-lg">database</span>
+                            </div>
+                            <div>
+                                <h3 class="font-headline-sm text-headline-sm text-on-surface">Dataset Overview</h3>
+                                <p class="text-body-md text-on-surface-variant mt-xs">Analyze raw transaction patterns and feature distributions.</p>
+                            </div>
+                        </a>
+                        <a class="glass-card p-lg rounded-xl hover-lift flex flex-col items-center text-center gap-md group cursor-pointer" onclick="navigateTo('page-model-performance', 'Model Performance')">
+                            <div class="w-16 h-16 rounded-full bg-secondary-container flex items-center justify-center group-hover:bg-accent-pink group-hover:text-white transition-colors">
+                                <span class="material-symbols-outlined text-display-lg">shape_line</span>
+                            </div>
+                            <div>
+                                <h3 class="font-headline-sm text-headline-sm text-on-surface">Model Performance</h3>
+                                <p class="text-body-md text-on-surface-variant mt-xs">Review F1 scores, Confusion Matrices, and ROC curves.</p>
+                            </div>
+                        </a>
+                        <a class="glass-card p-lg rounded-xl hover-lift flex flex-col items-center text-center gap-md group cursor-pointer" onclick="navigateTo('page-live-prediction', 'Fraud Prediction')">
+                            <div class="w-16 h-16 rounded-full bg-secondary-container flex items-center justify-center group-hover:bg-status-success group-hover:text-white transition-colors">
+                                <span class="material-symbols-outlined text-display-lg">shield_lock</span>
+                            </div>
+                            <div>
+                                <h3 class="font-headline-sm text-headline-sm text-on-surface">Live Prediction</h3>
+                                <p class="text-body-md text-on-surface-variant mt-xs">Run real-time inference on custom transaction inputs.</p>
+                            </div>
+                        </a>
+                        <a class="glass-card p-lg rounded-xl hover-lift flex flex-col items-center text-center gap-md group cursor-pointer" onclick="navigateTo('page-about', 'About the Project')">
+                            <div class="w-16 h-16 rounded-full bg-secondary-container flex items-center justify-center group-hover:bg-accent-purple group-hover:text-white transition-colors">
+                                <span class="material-symbols-outlined text-display-lg">info</span>
+                            </div>
+                            <div>
+                                <h3 class="font-headline-sm text-headline-sm text-on-surface">Project Info</h3>
+                                <p class="text-body-md text-on-surface-variant mt-xs">Documentation on architecture and neural network logic.</p>
+                            </div>
+                        </a>
+                    </section>
+                </div>
+
+
+                <!-- ==================== VISUAL ANALYTICS / DATASET OVERVIEW PAGE ==================== -->
+                <div id="page-dataset-overview" class="page-content hidden animate-fade-in space-y-lg">
+                    <section class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-outline-variant pb-md">
+                        <div>
+                            <h2 class="text-headline-lg font-headline-lg text-on-surface">Visual Analytics Dashboard</h2>
+                            <p class="text-body-md text-on-surface-variant mt-xs">Complete exploratory data analysis and model evaluation visualizations from the Credit Card Fraud notebook.</p>
+                        </div>
+                    </section>
+
+                    <!-- Stats Row -->
+                    <section class="grid grid-cols-1 md:grid-cols-4 gap-md">
+                        <div class="glass-card p-md rounded-xl flex items-center gap-md">
+                            <span class="material-symbols-outlined text-primary bg-primary/10 p-md rounded-lg text-display-lg">bar_chart</span>
+                            <div>
+                                <div class="text-label-md text-on-surface-variant">Total Transactions</div>
+                                <div class="text-headline-md font-bold text-on-surface" id="ds-total">8,040</div>
+                            </div>
+                        </div>
+                        <div class="glass-card p-md rounded-xl flex items-center gap-md border-l-2 border-l-status-success">
+                            <span class="material-symbols-outlined text-status-success bg-status-success/10 p-md rounded-lg text-display-lg">thumb_up</span>
+                            <div>
+                                <div class="text-label-md text-on-surface-variant">Genuine Cases</div>
+                                <div class="text-headline-md font-bold text-on-surface" id="ds-genuine">8,000</div>
+                            </div>
+                        </div>
+                        <div class="glass-card p-md rounded-xl flex items-center gap-md border-l-2 border-l-status-danger">
+                            <span class="material-symbols-outlined text-status-danger bg-status-danger/10 p-md rounded-lg text-display-lg">report_problem</span>
+                            <div>
+                                <div class="text-label-md text-on-surface-variant">Fraud Cases</div>
+                                <div class="text-headline-md font-bold text-on-surface" id="ds-fraud">40</div>
+                            </div>
+                        </div>
+                        <div class="glass-card p-md rounded-xl flex items-center gap-md">
+                            <span class="material-symbols-outlined text-accent-amber bg-accent-amber/10 p-md rounded-lg text-display-lg">percent</span>
+                            <div>
+                                <div class="text-label-md text-on-surface-variant">Fraud Ratio</div>
+                                <div class="text-headline-md font-bold text-on-surface" id="ds-ratio">0.4975%</div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Section 1: Class Distribution -->
+                    <section class="glass-card p-lg rounded-xl">
+                        <h3 class="font-headline-sm text-headline-sm text-on-surface mb-xs">Class Distribution (0 = Genuine, 1 = Fraud)</h3>
+                        <p class="text-body-md text-on-surface-variant mb-md">Count plot showing the severe class imbalance — fraud cases represent less than 0.5% of total records.</p>
+                        <div id="chart-class-dist" class="w-full h-80"></div>
+                    </section>
+
+                    <!-- Section 2: Transaction Amount & Time Distribution -->
+                    <section class="grid grid-cols-1 lg:grid-cols-2 gap-lg">
+                        <div class="glass-card p-lg rounded-xl">
+                            <h3 class="font-headline-sm text-headline-sm text-on-surface mb-xs">Transaction Amount Distribution</h3>
+                            <p class="text-body-md text-on-surface-variant mb-md">Histogram showing the distribution of transaction amounts across all records (50 bins).</p>
+                            <div id="chart-amount-hist" class="w-full h-80"></div>
+                        </div>
+                        <div class="glass-card p-lg rounded-xl">
+                            <h3 class="font-headline-sm text-headline-sm text-on-surface mb-xs">Transaction Time Distribution</h3>
+                            <p class="text-body-md text-on-surface-variant mb-md">Histogram showing when transactions occurred over the observation period (50 bins).</p>
+                            <div id="chart-time-hist" class="w-full h-80"></div>
+                        </div>
+                    </section>
+
+                    <!-- Section 3: Amount by Class (Boxplot) & Time by Class -->
+                    <section class="grid grid-cols-1 lg:grid-cols-2 gap-lg">
+                        <div class="glass-card p-lg rounded-xl">
+                            <h3 class="font-headline-sm text-headline-sm text-on-surface mb-xs">Transaction Amount by Class (Boxplot)</h3>
+                            <p class="text-body-md text-on-surface-variant mb-md">Comparing transaction amount distributions between genuine and fraudulent transactions.</p>
+                            <div id="chart-amount-box" class="w-full h-80"></div>
+                        </div>
+                        <div class="glass-card p-lg rounded-xl">
+                            <h3 class="font-headline-sm text-headline-sm text-on-surface mb-xs">Transaction Time by Class (Boxplot)</h3>
+                            <p class="text-body-md text-on-surface-variant mb-md">Comparing transaction timing distributions between genuine and fraudulent transactions.</p>
+                            <div id="chart-time-box" class="w-full h-80"></div>
+                        </div>
+                    </section>
+
+                    <!-- Section 4: Model Comparison Bar Chart -->
+                    <section class="glass-card p-lg rounded-xl">
+                        <h3 class="font-headline-sm text-headline-sm text-on-surface mb-xs">Model Comparison (Accuracy, F1-Score, ROC-AUC)</h3>
+                        <p class="text-body-md text-on-surface-variant mb-md">Side-by-side performance comparison of all four trained classifiers across key evaluation metrics.</p>
+                        <div id="chart-model-comparison" class="w-full h-96"></div>
+                    </section>
+
+                    <!-- Section 5: ROC Curve Comparison -->
+                    <section class="glass-card p-lg rounded-xl">
+                        <h3 class="font-headline-sm text-headline-sm text-on-surface mb-xs">ROC Curve Comparison (All Models)</h3>
+                        <p class="text-body-md text-on-surface-variant mb-md">Receiver Operating Characteristic curves overlaid for all classifiers. The diagonal represents random guessing.</p>
+                        <div id="chart-roc-analytics" class="w-full h-96"></div>
+                    </section>
+
+                    <!-- Section 5b: Neural Network Training Curves (Loss & AUC) -->
+                    <section class="grid grid-cols-1 lg:grid-cols-2 gap-lg">
+                        <div class="glass-card p-lg rounded-xl">
+                            <h3 class="font-headline-sm text-headline-sm text-on-surface mb-xs">Neural Network Training Loss Curve</h3>
+                            <p class="text-body-md text-on-surface-variant mb-md">Comparing training loss against validation loss across 15 epochs to monitor convergence.</p>
+                            <div id="chart-nn-loss" class="w-full h-80"></div>
+                        </div>
+                        <div class="glass-card p-lg rounded-xl">
+                            <h3 class="font-headline-sm text-headline-sm text-on-surface mb-xs">Neural Network Training AUC Curve</h3>
+                            <p class="text-body-md text-on-surface-variant mb-md">Plotting training AUC score against validation AUC score across 15 epochs.</p>
+                            <div id="chart-nn-auc" class="w-full h-80"></div>
+                        </div>
+                    </section>
+
+                    <!-- Section 6: Feature Correlation Heatmap -->
+                    <section class="glass-card p-lg rounded-xl">
+                        <h3 class="font-headline-sm text-headline-sm text-on-surface mb-xs">Feature Correlation Heatmap</h3>
+                        <p class="text-body-md text-on-surface-variant mb-md">Pearson correlation matrix showing relationships between key PCA features, Amount, Time, and the fraud Class label.</p>
+                        <div id="chart-correlation" class="w-full h-[500px]"></div>
+                    </section>
+
+                    <!-- Section 7: Confusion Matrices (All Models) -->
+                    <section class="glass-card p-lg rounded-xl space-y-md">
+                        <h3 class="font-headline-sm text-headline-sm text-on-surface">Confusion Matrices (All Models)</h3>
+                        <p class="text-body-md text-on-surface-variant">Visual breakdown of classification outcomes for each model — True Positives, False Positives, True Negatives, and False Negatives.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md" id="cm-grid">
+                            <!-- Dynamically populated -->
+                        </div>
+                    </section>
+
+                    <!-- Section 8: Raw Table Data Explorer -->
+                    <section class="glass-card p-lg rounded-xl space-y-md">
+                        <div class="flex justify-between items-center">
+                            <h3 class="font-headline-sm text-headline-sm text-on-surface">Explore Raw Transaction Records</h3>
+                            <div class="flex gap-sm">
+                                <button onclick="changePageOffset(-15)" class="p-xs bg-surface-variant text-on-surface rounded hover:bg-primary hover:text-on-primary transition-colors flex items-center">
+                                    <span class="material-symbols-outlined">chevron_left</span>
+                                </button>
+                                <span id="table-page-info" class="text-body-md text-on-surface-variant self-center">Showing rows 1 - 15</span>
+                                <button onclick="changePageOffset(15)" class="p-xs bg-surface-variant text-on-surface rounded hover:bg-primary hover:text-on-primary transition-colors flex items-center">
+                                    <span class="material-symbols-outlined">chevron_right</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto rounded-lg border border-outline-variant bg-surface-container-lowest">
+                            <table class="w-full border-collapse text-left text-body-md">
+                                <thead class="bg-surface-variant text-on-surface border-b border-outline-variant uppercase text-label-md font-bold">
+                                    <tr>
+                                        <th class="p-md">Time</th>
+                                        <th class="p-md">Amount</th>
+                                        <th class="p-md">V1</th>
+                                        <th class="p-md">V2</th>
+                                        <th class="p-md">V3</th>
+                                        <th class="p-md">V4</th>
+                                        <th class="p-md">V5</th>
+                                        <th class="p-md">V10</th>
+                                        <th class="p-md">V14</th>
+                                        <th class="p-md">Class</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dataset-table-body" class="divide-y divide-outline-variant">
+                                    <tr>
+                                        <td colspan="10" class="p-lg text-center text-on-surface-variant">Loading data rows...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+
+
+                <!-- ==================== MODEL PERFORMANCE PAGE ==================== -->
+                <div id="page-model-performance" class="page-content hidden animate-fade-in space-y-lg">
+                    <section class="border-b border-outline-variant pb-md">
+                        <h2 class="text-headline-lg font-headline-lg text-on-surface">Model Performance Evaluation</h2>
+                        <p class="text-body-md text-on-surface-variant mt-xs">Comparative analytics compiled from training baseline and deep learning models.</p>
+                    </section>
+
+                    <!-- Metrics Table -->
+                    <section class="glass-card p-lg rounded-xl space-y-md">
+                        <h3 class="font-headline-sm text-headline-sm text-on-surface">Evaluation Summary Table</h3>
+                        <div class="overflow-x-auto rounded-lg border border-outline-variant bg-surface-container-lowest">
+                            <table class="w-full border-collapse text-left">
+                                <thead class="bg-surface-variant text-on-surface border-b border-outline-variant uppercase text-label-md font-bold">
+                                    <tr>
+                                        <th class="p-md">Model Name</th>
+                                        <th class="p-md">Accuracy</th>
+                                        <th class="p-md">F1-Score</th>
+                                        <th class="p-md">ROC-AUC</th>
+                                        <th class="p-md">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-outline-variant text-body-md text-on-surface">
+                                    <tr class="bg-primary-container text-on-background font-bold border-l-4 border-l-primary border-r border-y">
+                                        <td class="p-md flex items-center gap-xs">
+                                            <span class="material-symbols-outlined text-primary text-sm">stars</span>
+                                            XGBoost (Best Classical Model)
+                                        </td>
+                                        <td class="p-md">99.25%</td>
+                                        <td class="p-md">14.29%</td>
+                                        <td class="p-md">0.7981</td>
+                                        <td class="p-md"><span class="bg-primary/20 text-primary px-sm py-xs rounded text-label-md font-bold">Selected</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-md">Neural Network (Deep Learning)</td>
+                                        <td class="p-md">99.38%</td>
+                                        <td class="p-md">16.67%</td>
+                                        <td class="p-md">0.5378</td>
+                                        <td class="p-md"><span class="bg-surface-variant text-on-surface-variant px-sm py-xs rounded text-label-md">Alternative</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-md">Random Forest</td>
+                                        <td class="p-md">98.76%</td>
+                                        <td class="p-md">0.00%</td>
+                                        <td class="p-md">0.7375</td>
+                                        <td class="p-md"><span class="bg-surface-variant text-on-surface-variant px-sm py-xs rounded text-label-md">Alternative</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-md">Logistic Regression</td>
+                                        <td class="p-md">80.16%</td>
+                                        <td class="p-md">1.24%</td>
+                                        <td class="p-md">0.6130</td>
+                                        <td class="p-md"><span class="bg-surface-variant text-on-surface-variant px-sm py-xs rounded text-label-md">Baseline</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="p-md bg-surface-container rounded-lg border border-outline-variant text-label-lg text-on-surface-variant flex items-start gap-md">
+                            <span class="material-symbols-outlined text-primary mt-0.5">info</span>
+                            <p>
+                                <strong>Class Imbalance Explanation:</strong> The dataset is highly imbalanced (0.49% fraud class). Accuracy is high across all models because simply predicting 'Genuine' for all transactions achieves ~99.5% accuracy. Therefore, <strong>ROC-AUC</strong> and <strong>F1-Score</strong> are the critical evaluation metrics. XGBoost is optimized to capture maximum true fraud cases while minimizing false alerts.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- Charts row -->
+                    <section class="grid grid-cols-1 lg:grid-cols-2 gap-lg">
+                        <div class="glass-card p-lg rounded-xl">
+                            <h3 class="font-headline-sm text-headline-sm text-on-surface mb-md">ROC Curve Visualizer (All Models)</h3>
+                            <div id="chart-roc-curve" class="w-full h-80"></div>
+                        </div>
+                        <div class="glass-card p-lg rounded-xl space-y-md">
+                            <div class="flex justify-between items-center">
+                                <h3 class="font-headline-sm text-headline-sm text-on-surface">Confusion Matrix Heatmap</h3>
+                                <select id="cm-model-select" onchange="renderConfusionMatrix()" class="bg-surface-container border border-outline-variant text-on-surface rounded px-sm py-xs focus:ring-primary text-body-md focus:border-primary">
+                                    <option value="xgb">XGBoost</option>
+                                    <option value="nn">Neural Network</option>
+                                    <option value="rf">Random Forest</option>
+                                    <option value="lr">Logistic Regression</option>
+                                </select>
+                            </div>
+                            <div class="grid grid-cols-2 gap-md text-center max-w-md mx-auto py-md">
+                                <div class="p-md bg-surface-container rounded-lg border border-outline-variant">
+                                    <div class="text-label-md text-on-surface-variant">True Negatives (TN)</div>
+                                    <div class="text-headline-md font-bold text-on-surface" id="cm-tn">-</div>
+                                    <div class="text-xs text-status-success font-semibold mt-1">Genuine Identified</div>
+                                </div>
+                                <div class="p-md bg-surface-container rounded-lg border border-outline-variant">
+                                    <div class="text-label-md text-on-surface-variant">False Positives (FP)</div>
+                                    <div class="text-headline-md font-bold text-on-surface text-accent-coral" id="cm-fp">-</div>
+                                    <div class="text-xs text-on-surface-variant font-semibold mt-1">False Alarms</div>
+                                </div>
+                                <div class="p-md bg-surface-container rounded-lg border border-outline-variant">
+                                    <div class="text-label-md text-on-surface-variant">False Negatives (FN)</div>
+                                    <div class="text-headline-md font-bold text-on-surface text-status-danger" id="cm-fn">-</div>
+                                    <div class="text-xs text-on-surface-variant font-semibold mt-1">Missed Fraud</div>
+                                </div>
+                                <div class="p-md bg-surface-container rounded-lg border border-outline-variant border-l-4 border-l-status-success">
+                                    <div class="text-label-md text-on-surface-variant">True Positives (TP)</div>
+                                    <div class="text-headline-md font-bold text-on-surface text-status-success" id="cm-tp">-</div>
+                                    <div class="text-xs text-status-success font-semibold mt-1 font-bold">Fraud Caught</div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Feature Importances -->
+                    <section class="glass-card p-lg rounded-xl">
+                        <h3 class="font-headline-sm text-headline-sm text-on-surface mb-md">Feature Importance (XGBoost Model)</h3>
+                        <div id="chart-feature-imp" class="w-full h-96"></div>
+                    </section>
+                </div>
+
+
+                <!-- ==================== LIVE PREDICTION PAGE ==================== -->
+                <div id="page-live-prediction" class="page-content hidden animate-fade-in space-y-lg">
+                    <section class="border-b border-outline-variant pb-md">
+                        <h2 class="text-headline-lg font-headline-lg text-on-surface">Real-Time Fraud Inference</h2>
+                        <p class="text-body-md text-on-surface-variant mt-xs">Run a single transaction prediction using the selected ML model.</p>
+                    </section>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+                        <!-- Left Column: Input Form -->
+                        <div class="lg:col-span-2 space-y-md">
+                            <!-- Preset & Model Config -->
+                            <div class="glass-card p-lg rounded-xl grid grid-cols-1 md:grid-cols-2 gap-md">
+                                <div>
+                                    <label class="block text-label-lg font-label-lg text-on-surface-variant mb-xs">Inference Model</label>
+                                    <select id="predict-model" class="w-full bg-surface-container border border-outline-variant text-on-surface rounded-lg p-sm focus:ring-primary focus:border-primary">
+                                        <option>XGBoost (Best Classical Model)</option>
+                                        <option>Neural Network (Deep Learning)</option>
+                                        <option>Random Forest</option>
+                                        <option>Logistic Regression</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-label-lg font-label-lg text-on-surface-variant mb-xs">Load Quick Preset Sample</label>
+                                    <select id="predict-preset" onchange="handlePresetChange()" class="w-full bg-surface-container border border-outline-variant text-on-surface rounded-lg p-sm focus:ring-primary focus:border-primary">
+                                        <option>Manual Input</option>
+                                        <option>Genuine Transaction Sample</option>
+                                        <option>Fraudulent Transaction Sample</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Form Parameters -->
+                            <div class="glass-card p-lg rounded-xl space-y-md">
+                                <h3 class="font-headline-sm text-headline-sm text-on-surface">Transaction Metadata</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+                                    <div>
+                                        <label class="block text-label-lg text-on-surface-variant mb-xs">Transaction Time (seconds from epoch)</label>
+                                        <input type="number" id="predict-time" value="0" class="w-full bg-surface-container border border-outline-variant text-on-surface rounded-lg p-sm focus:ring-primary focus:border-primary"/>
+                                    </div>
+                                    <div>
+                                        <label class="block text-label-lg text-on-surface-variant mb-xs">Transaction Amount ($)</label>
+                                        <input type="number" id="predict-amount" value="1.0" min="0" step="any" class="w-full bg-surface-container border border-outline-variant text-on-surface rounded-lg p-sm focus:ring-primary focus:border-primary"/>
+                                    </div>
+                                </div>
+
+                                <div class="border-t border-outline-variant pt-md">
+                                    <details class="group">
+                                        <summary class="flex justify-between items-center font-headline-sm text-headline-sm text-on-surface cursor-pointer select-none">
+                                            <span>Modify Anonymized PCA Features (V1 - V28)</span>
+                                            <span class="material-symbols-outlined transition-transform duration-200 group-open:rotate-180">expand_more</span>
+                                        </summary>
+                                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-md pt-md">
+                                            <!-- Inputs V1-V28 -->
+                                            <!-- Dynamically generated in JS, fallback template in case -->
+                                            <script>
+                                                for(let i=1; i<=28; i++) {
+                                                    document.write(`
+                                                        <div>
+                                                            <label class="block text-xs font-semibold text-on-surface-variant mb-1">V${i}</label>
+                                                            <input type="number" id="v${i}" value="0.0" step="any" class="w-full bg-surface-container-low border border-outline-variant text-on-surface text-sm rounded p-1 text-center focus:ring-primary focus:border-primary"/>
+                                                        </div>
+                                                    `);
+                                                }
+                                            </script>
+                                        </div>
+                                    </details>
+                                </div>
+
+                                <button onclick="runPrediction()" class="w-full bg-primary text-on-primary py-md rounded-lg font-bold text-headline-sm active:scale-95 transition-transform hover:brightness-110 shadow-lg mt-md">
+                                    Run Fraud Analysis
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Results Panel -->
+                        <div class="space-y-md">
+                            <div class="glass-card p-lg rounded-xl h-full flex flex-col justify-center items-center min-h-[400px] relative border" id="prediction-result-panel">
+                                <!-- Initial State -->
+                                <div id="state-initial" class="text-center space-y-md">
+                                    <span class="material-symbols-outlined text-on-primary-container text-display-lg" style="font-size: 80px;">psychology</span>
+                                    <h3 class="font-headline-sm text-headline-sm text-on-surface">Awaiting Input</h3>
+                                    <p class="text-body-md text-on-surface-variant max-w-xs">Configure the transaction features and click "Run Fraud Analysis" to evaluate risk.</p>
+                                </div>
+
+                                <!-- Loading State -->
+                                <div id="state-loading" class="hidden text-center space-y-md">
+                                    <span class="material-symbols-outlined text-primary animate-spin" style="font-size: 80px;">sync</span>
+                                    <h3 class="font-headline-sm text-headline-sm text-on-surface">Inference Running...</h3>
+                                    <p class="text-body-md text-on-surface-variant max-w-xs">Feeding PCA components into neural architectures...</p>
+                                    <div class="scanning-line"></div>
+                                </div>
+
+                                <!-- Result State -->
+                                <div id="state-result" class="hidden w-full space-y-lg text-center flex flex-col items-center">
+                                    <!-- Dynamic Badge -->
+                                    <div id="result-badge" class="px-lg py-md rounded-xl text-headline-md font-black uppercase inline-flex items-center gap-sm">
+                                        <span id="result-badge-icon" class="material-symbols-outlined"></span>
+                                        <span id="result-badge-text"></span>
+                                    </div>
+                                    
+                                    <div id="result-desc" class="text-body-lg text-on-surface-variant max-w-sm"></div>
+
+                                    <!-- Gauge -->
+                                    <div id="result-gauge" class="w-full h-56 flex justify-center"></div>
+
+                                    <!-- GenAI alert container (only for Fraud) -->
+                                    <div id="result-genai-alert" class="hidden p-md bg-error-container/30 border border-status-danger text-on-background text-left rounded-lg space-y-sm">
+                                        <div class="flex items-center gap-sm text-status-danger font-bold text-label-lg uppercase">
+                                            <span class="material-symbols-outlined">warning</span>
+                                            Autonomous Defensive Action
+                                        </div>
+                                        <p class="text-body-md leading-relaxed text-on-error-container">
+                                            🚨 <strong>ALERT:</strong> Real-time neural inference flags this transaction with high fraud probability. The system has automatically queued an out-of-band confirmation SMS to the cardholder and put a temporary block on the associated account ID.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- ==================== BATCH PREDICTOR PAGE ==================== -->
+                <div id="page-batch-prediction" class="page-content hidden animate-fade-in space-y-lg">
+                    <section class="border-b border-outline-variant pb-md">
+                        <h2 class="text-headline-lg font-headline-lg text-on-surface">Batch Prediction & CSV Report</h2>
+                        <p class="text-body-md text-on-surface-variant mt-xs">Upload bulk transaction files for large-scale risk classification.</p>
+                    </section>
+
+                    <!-- Uploader section -->
+                    <section class="glass-card p-lg rounded-xl space-y-md">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-md items-end">
+                            <div class="md:col-span-2">
+                                <label class="block text-label-lg font-label-lg text-on-surface-variant mb-xs">Select Inference Model</label>
+                                <select id="batch-model" class="w-full bg-surface-container border border-outline-variant text-on-surface rounded-lg p-sm focus:ring-primary focus:border-primary">
+                                    <option>XGBoost (Best Classical Model)</option>
+                                    <option>Neural Network (Deep Learning)</option>
+                                    <option>Random Forest</option>
+                                    <option>Logistic Regression</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-label-lg font-label-lg text-on-surface-variant mb-xs">Upload Transactions CSV</label>
+                                <input type="file" id="batch-file-input" accept=".csv" class="w-full bg-surface-container text-on-surface border border-outline-variant rounded-lg file:mr-md file:py-sm file:px-md file:rounded-l-lg file:border-0 file:text-body-md file:bg-primary file:text-on-primary file:font-semibold hover:file:brightness-110 cursor-pointer"/>
+                            </div>
+                        </div>
+                        <button onclick="runBatchPrediction()" class="w-full bg-primary text-on-primary py-sm rounded-lg font-bold text-label-lg active:scale-95 transition-transform hover:brightness-110">
+                            Run Bulk Inference
+                        </button>
+                    </section>
+
+                    <!-- Loader -->
+                    <div id="batch-loader" class="hidden text-center py-xl space-y-md">
+                        <span class="material-symbols-outlined text-primary animate-spin" style="font-size: 60px;">sync</span>
+                        <h3 class="font-headline-sm text-headline-sm text-on-surface">Processing Batch File...</h3>
+                    </div>
+
+                    <!-- Batch Results Section -->
+                    <div id="batch-results-container" class="hidden space-y-lg">
+                        <!-- Stats Row -->
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-md">
+                            <div class="glass-card p-md rounded-xl">
+                                <div class="text-label-md text-on-surface-variant">Processed Records</div>
+                                <div class="text-headline-md font-bold text-on-surface" id="batch-stat-total">-</div>
+                            </div>
+                            <div class="glass-card p-md rounded-xl border-l-2 border-l-status-success">
+                                <div class="text-label-md text-on-surface-variant">Genuine Flagged</div>
+                                <div class="text-headline-md font-bold text-on-surface text-status-success" id="batch-stat-genuine">-</div>
+                            </div>
+                            <div class="glass-card p-md rounded-xl border-l-2 border-l-status-danger">
+                                <div class="text-label-md text-on-surface-variant">Fraud Flagged</div>
+                                <div class="text-headline-md font-bold text-on-surface text-status-danger" id="batch-stat-fraud">-</div>
+                            </div>
+                            <div class="glass-card p-md rounded-xl">
+                                <div class="text-label-md text-on-surface-variant font-bold">Fraud Percentage</div>
+                                <div class="text-headline-md font-bold text-on-surface" id="batch-stat-rate">-</div>
+                            </div>
+                        </div>
+
+                        <!-- Plots Grid -->
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-lg">
+                            <div class="glass-card p-lg rounded-xl">
+                                <h3 class="font-headline-sm text-headline-sm text-on-surface mb-md">Risk Classification Share</h3>
+                                <div id="chart-batch-pie" class="w-full h-80"></div>
+                            </div>
+                            <div class="glass-card p-lg rounded-xl">
+                                <h3 class="font-headline-sm text-headline-sm text-on-surface mb-md">Fraud Probabilities Distribution</h3>
+                                <div id="chart-batch-hist" class="w-full h-80"></div>
+                            </div>
+                        </div>
+
+                        <!-- Batch Data Preview Table -->
+                        <section class="glass-card p-lg rounded-xl space-y-md">
+                            <div class="flex justify-between items-center">
+                                <h3 class="font-headline-sm text-headline-sm text-on-surface">Predictions Preview (First 100 Rows)</h3>
+                                <button onclick="downloadBatchPredictions()" class="px-md py-sm bg-primary text-on-primary font-bold rounded-lg hover:brightness-110 active:scale-95 transition-transform flex items-center gap-xs">
+                                    <span class="material-symbols-outlined">download</span>
+                                    Download Predicted CSV
+                                </button>
+                            </div>
+                            <div class="overflow-x-auto rounded-lg border border-outline-variant bg-surface-container-lowest max-h-96">
+                                <table class="w-full border-collapse text-left text-body-md">
+                                    <thead class="bg-surface-variant text-on-surface border-b border-outline-variant uppercase text-label-md font-bold sticky top-0 z-10">
+                                        <tr>
+                                            <th class="p-md">Time</th>
+                                            <th class="p-md">Amount</th>
+                                            <th class="p-md">Fraud Probability (%)</th>
+                                            <th class="p-md">Classification</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="batch-table-body" class="divide-y divide-outline-variant">
+                                        <!-- Dynamic content -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+
+                <!-- ==================== ABOUT PAGE ==================== -->
+                <div id="page-about" class="page-content hidden animate-fade-in space-y-lg">
+                    <section class="border-b border-outline-variant pb-md">
+                        <h2 class="text-headline-lg font-headline-lg text-on-surface">About the Project</h2>
+                        <p class="text-body-md text-on-surface-variant mt-xs">Background information, architecture, and technology specs of the credit card fraud detection system.</p>
+                    </section>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+                        <!-- Project summary -->
+                        <div class="lg:col-span-2 space-y-md">
+                            <div class="glass-card p-lg rounded-xl space-y-md">
+                                <h3 class="font-headline-sm text-headline-sm text-on-surface border-b border-outline-variant pb-xs">Project Summary</h3>
+                                <p class="text-body-lg leading-relaxed text-on-surface-variant">
+                                    Credit card fraud causes billions of dollars in losses annually. This project demonstrates how neural architectures and ensemble models can run real-time inference on anonymized transaction data. By applying SMOTE (Synthetic Minority Over-sampling Technique) during the training phase, we resolved severe class imbalances (fraud representing only 0.49% of raw records).
+                                </p>
+                                <p class="text-body-lg leading-relaxed text-on-surface-variant">
+                                    The core modeling leverages <strong>XGBoost</strong> (with an F1 of 14.29% and ROC-AUC of 0.7981) and a multi-layer deep network in <strong>TensorFlow/Keras</strong>. Features V1-V28 represent principal PCA components of cardholder sensitive information to preserve privacy, and Amount/Time metadata values are scaled according to training distributions.
+                                </p>
+                            </div>
+
+                            <div class="glass-card p-lg rounded-xl space-y-md">
+                                <h3 class="font-headline-sm text-headline-sm text-on-surface border-b border-outline-variant pb-xs">Development Syllabus Mapping</h3>
+                                <div class="overflow-x-auto rounded-lg border border-outline-variant bg-surface-container-lowest">
+                                    <table class="w-full border-collapse text-left text-body-md text-on-surface">
+                                        <thead class="bg-surface-variant text-on-surface border-b border-outline-variant uppercase text-label-md font-bold">
+                                            <tr>
+                                                <th class="p-md">Timeline</th>
+                                                <th class="p-md">Development Milestone</th>
+                                                <th class="p-md">Outcome</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="divide-y divide-outline-variant">
+                                            <tr>
+                                                <td class="p-md font-semibold">Days 1 - 2</td>
+                                                <td class="p-md">EDA & Feature Distributions</td>
+                                                <td class="p-md">Anonymized components mapped</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="p-md font-semibold">Days 3 - 4</td>
+                                                <td class="p-md">Baseline Classifiers (Logistic Regression)</td>
+                                                <td class="p-md">Established classification threshold</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="p-md font-semibold">Days 5 - 6</td>
+                                                <td class="p-md">Class Balance via SMOTE</td>
+                                                <td class="p-md">Synthesizing minority fraud cases</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="p-md font-semibold">Days 7 - 8</td>
+                                                <td class="p-md">Ensemble (XGB, RF) & Deep Learning Training</td>
+                                                <td class="p-md">Fitted classifier pipelines</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="p-md font-semibold">Days 9 - 10</td>
+                                                <td class="p-md">Serialization & Dashboard Development</td>
+                                                <td class="p-md">Unified Flask & Tailwind dashboard</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sidebar column: Specs -->
+                        <div class="space-y-md font-body-md">
+                            <div class="glass-card p-lg rounded-xl space-y-md">
+                                <h3 class="font-headline-sm text-headline-sm text-on-surface border-b border-outline-variant pb-xs">System Stack</h3>
+                                <div class="flex flex-wrap gap-xs">
+                                    <span class="bg-surface-container text-on-surface px-sm py-xs rounded text-xs font-bold border border-outline-variant">Python 3.10+</span>
+                                    <span class="bg-surface-container text-on-surface px-sm py-xs rounded text-xs font-bold border border-outline-variant">Flask Backend</span>
+                                    <span class="bg-surface-container text-on-surface px-sm py-xs rounded text-xs font-bold border border-outline-variant">Tailwind CSS v3</span>
+                                    <span class="bg-surface-container text-on-surface px-sm py-xs rounded text-xs font-bold border border-outline-variant">Plotly.js Charting</span>
+                                    <span class="bg-surface-container text-on-surface px-sm py-xs rounded text-xs font-bold border border-outline-variant">Scikit-Learn</span>
+                                    <span class="bg-surface-container text-on-surface px-sm py-xs rounded text-xs font-bold border border-outline-variant">XGBoost API</span>
+                                    <span class="bg-surface-container text-on-surface px-sm py-xs rounded text-xs font-bold border border-outline-variant">TensorFlow / Keras</span>
+                                    <span class="bg-surface-container text-on-surface px-sm py-xs rounded text-xs font-bold border border-outline-variant">Joblib Serialization</span>
+                                </div>
+                            </div>
+                            <div class="glass-card p-lg rounded-xl space-y-md">
+                                <h3 class="font-headline-sm text-headline-sm text-on-surface border-b border-outline-variant pb-xs">Team Details</h3>
+                                <div class="space-y-sm text-on-surface-variant text-label-lg">
+                                    <div>
+                                        <div class="font-bold text-on-surface">Course Project</div>
+                                        <div>Advanced Machine Learning Capstone</div>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-on-surface">Architecture Type</div>
+                                        <div>Ensemble & Multi-Layer Deep Neural Net</div>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-on-surface">Inference Speed</div>
+                                        <div>~35 milliseconds (local loop)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="max-w-7xl mx-auto w-full p-container-margin border-t border-outline-variant py-lg flex flex-col md:flex-row justify-between items-center opacity-60 text-label-md bg-surface-container-lowest">
+            <p>Sentinel Analytics Platform | AI Capstone Project</p>
+            <div class="flex gap-md mt-sm md:mt-0">
+                <a class="hover:text-primary transition-colors cursor-pointer" onclick="navigateTo('page-about', 'About the Project')">Documentation</a>
+                <a class="hover:text-primary transition-colors" href="#">API Reference</a>
+                <a class="hover:text-primary transition-colors" href="#">System Status</a>
+            </div>
+        </footer>
+    </main>
+</div>
+
+<script>
+    // Global Navigation SPA routing
+    function navigateTo(pageId, title) {
+        // Hide all pages
+        document.querySelectorAll('.page-content').forEach(el => {
+            el.classList.add('hidden');
+        });
+        
+        // Show target page
+        const targetPage = document.getElementById(pageId);
+        if (targetPage) {
+            targetPage.classList.remove('hidden');
+        }
+        
+        // Update top-bar title
+        document.getElementById('header-title').textContent = title;
+        
+        // Update sidebar links highlighting
+        document.querySelectorAll('aside nav a').forEach(a => {
+            a.classList.remove('bg-secondary-container', 'text-on-secondary-container');
+            a.classList.add('text-on-surface-variant', 'hover:bg-surface-variant', 'hover:text-on-surface');
+        });
+        
+        // Highlight active link matching the data-page attribute
+        const activeLink = document.querySelector(`aside nav a[data-page="${pageId}"]`);
+        if (activeLink) {
+            activeLink.classList.remove('text-on-surface-variant', 'hover:bg-surface-variant', 'hover:text-on-surface');
+            activeLink.classList.add('bg-secondary-container', 'text-on-secondary-container');
+        }
+        
+        // Perform animations and renders specific to each page
+        if (pageId === 'page-dataset-overview') {
+            loadDatasetStats();
+        } else if (pageId === 'page-model-performance') {
+            loadPerformanceStats();
+        }
+    }
+
+    // Dynamic stats loading and counts animations
+    let datasetStatsLoaded = false;
+    async function loadDatasetStats() {
+        if (datasetStatsLoaded) return;
+        try {
+            // Fetch stats
+            const statsRes = await fetch('/api/stats');
+            const stats = await statsRes.json();
+            document.getElementById('ds-total').textContent = stats.total_transactions.toLocaleString();
+            document.getElementById('ds-genuine').textContent = stats.genuine_count.toLocaleString();
+            document.getElementById('ds-fraud').textContent = stats.fraud_count.toLocaleString();
+            document.getElementById('ds-ratio').textContent = stats.fraud_rate.toFixed(4) + '%';
+
+            // Fetch distributions
+            const distRes = await fetch('/api/dataset-distributions');
+            const dist = await distRes.json();
+
+            // Fetch model performance (for ROC + confusion matrices)
+            const perfRes = await fetch('/api/model-performance');
+            const perf = await perfRes.json();
+
+            const darkLayout = {
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                font: { color: '#e2e2e5', family: 'Inter' },
+                xaxis: { gridcolor: '#47464c' },
+                yaxis: { gridcolor: '#47464c' },
+                margin: { t: 30, b: 50, l: 60, r: 20 }
+            };
+
+            // ===== Chart 1: Class Distribution (countplot) =====
+            Plotly.newPlot('chart-class-dist', [{
+                x: ['Genuine (Class 0)', 'Fraud (Class 1)'],
+                y: [stats.genuine_count, stats.fraud_count],
+                type: 'bar',
+                marker: { color: ['#5DCAA5', '#E24B4A'], line: { color: ['#3dab87','#c03535'], width: 1.5 } },
+                text: [stats.genuine_count.toLocaleString(), stats.fraud_count.toLocaleString()],
+                textposition: 'outside',
+                textfont: { color: '#e2e2e5' }
+            }], {
+                ...darkLayout,
+                yaxis: { ...darkLayout.yaxis, type: 'log', title: 'Count (Log Scale)' },
+                xaxis: { ...darkLayout.xaxis, title: 'Class' }
+            }, {responsive: true});
+
+            // ===== Chart 2: Transaction Amount Distribution (histogram) =====
+            Plotly.newPlot('chart-amount-hist', [{
+                x: dist.amount_hist.bin_centers,
+                y: dist.amount_hist.counts,
+                type: 'bar',
+                marker: { color: '#378ADD', opacity: 0.85 },
+                name: 'Amount'
+            }], {
+                ...darkLayout,
+                xaxis: { ...darkLayout.xaxis, title: 'Transaction Amount ($)' },
+                yaxis: { ...darkLayout.yaxis, title: 'Frequency' }
+            }, {responsive: true});
+
+            // ===== Chart 3: Transaction Time Distribution (histogram) =====
+            Plotly.newPlot('chart-time-hist', [{
+                x: dist.time_hist.bin_centers,
+                y: dist.time_hist.counts,
+                type: 'bar',
+                marker: { color: '#F0997B', opacity: 0.85 },
+                name: 'Time'
+            }], {
+                ...darkLayout,
+                xaxis: { ...darkLayout.xaxis, title: 'Time (seconds from start)' },
+                yaxis: { ...darkLayout.yaxis, title: 'Frequency' }
+            }, {responsive: true});
+
+            // ===== Chart 4: Amount by Class (Boxplot) =====
+            Plotly.newPlot('chart-amount-box', [
+                { y: dist.amount_by_class.genuine, type: 'box', name: 'Genuine', marker: { color: '#5DCAA5' } },
+                { y: dist.amount_by_class.fraud, type: 'box', name: 'Fraud', marker: { color: '#E24B4A' } }
+            ], {
+                ...darkLayout,
+                yaxis: { ...darkLayout.yaxis, title: 'Amount ($)' }
+            }, {responsive: true});
+
+            // ===== Chart 5: Time by Class (Boxplot) =====
+            Plotly.newPlot('chart-time-box', [
+                { y: dist.time_by_class.genuine, type: 'box', name: 'Genuine', marker: { color: '#5DCAA5' } },
+                { y: dist.time_by_class.fraud, type: 'box', name: 'Fraud', marker: { color: '#E24B4A' } }
+            ], {
+                ...darkLayout,
+                yaxis: { ...darkLayout.yaxis, title: 'Time (seconds)' }
+            }, {responsive: true});
+
+            // ===== Chart 6: Model Comparison Bar Chart =====
+            const mc = dist.model_comparison;
+            const shortNames = mc.models.map(m => m.replace(' (Best Classical Model)','').replace(' (Deep Learning)',''));
+            Plotly.newPlot('chart-model-comparison', [
+                { x: shortNames, y: mc.accuracy, type: 'bar', name: 'Accuracy', marker: { color: '#378ADD' } },
+                { x: shortNames, y: mc.f1, type: 'bar', name: 'F1-Score', marker: { color: '#5DCAA5' } },
+                { x: shortNames, y: mc.roc_auc, type: 'bar', name: 'ROC-AUC', marker: { color: '#7F77DD' } }
+            ], {
+                ...darkLayout,
+                barmode: 'group',
+                yaxis: { ...darkLayout.yaxis, title: 'Score', range: [0, 1.05] },
+                xaxis: { ...darkLayout.xaxis, title: 'Model' },
+                legend: { font: { color: '#e2e2e5' } }
+            }, {responsive: true});
+
+            // ===== Chart 7: ROC Curve Comparison =====
+            const rocColors = { xgb: '#c6c5d4', rf: '#D4537E', lr: '#EF9F27', nn: '#7F77DD' };
+            const rocLabels = { xgb: 'XGBoost (AUC: 0.7981)', rf: 'Random Forest (AUC: 0.7375)', lr: 'Logistic Regression (AUC: 0.6130)', nn: 'Neural Network (AUC: 0.5378)' };
+            const rocTraces = [];
+            for (const key in perf.roc_data) {
+                rocTraces.push({
+                    x: perf.roc_data[key].fpr, y: perf.roc_data[key].tpr,
+                    type: 'scatter', mode: 'lines',
+                    name: rocLabels[key] || key,
+                    line: { color: rocColors[key] || '#ccc', width: 3 }
+                });
+            }
+            rocTraces.push({ x: [0,1], y: [0,1], type: 'scatter', mode: 'lines', name: 'Random Guess', line: { color: '#6B7280', dash: 'dash' } });
+            Plotly.newPlot('chart-roc-analytics', rocTraces, {
+                ...darkLayout,
+                xaxis: { ...darkLayout.xaxis, title: 'False Positive Rate' },
+                yaxis: { ...darkLayout.yaxis, title: 'True Positive Rate' },
+                legend: { x: 0.55, y: 0.2, font: { color: '#e2e2e5' } }
+            }, {responsive: true});
+
+            // ===== Chart 7b: Neural Network Training Curves =====
+            const nnh = dist.nn_history;
+            Plotly.newPlot('chart-nn-loss', [
+                { x: nnh.epochs, y: nnh.loss, type: 'scatter', mode: 'lines+markers', name: 'Train Loss', line: { color: '#378ADD', width: 2.5 } },
+                { x: nnh.epochs, y: nnh.val_loss, type: 'scatter', mode: 'lines+markers', name: 'Val Loss', line: { color: '#E24B4A', width: 2.5 } }
+            ], {
+                ...darkLayout,
+                xaxis: { ...darkLayout.xaxis, title: 'Epoch' },
+                yaxis: { ...darkLayout.yaxis, title: 'Loss' },
+                legend: { font: { color: '#e2e2e5' } }
+            }, {responsive: true});
+
+            Plotly.newPlot('chart-nn-auc', [
+                { x: nnh.epochs, y: nnh.auc, type: 'scatter', mode: 'lines+markers', name: 'Train AUC', line: { color: '#5DCAA5', width: 2.5 } },
+                { x: nnh.epochs, y: nnh.val_auc, type: 'scatter', mode: 'lines+markers', name: 'Val AUC', line: { color: '#7F77DD', width: 2.5 } }
+            ], {
+                ...darkLayout,
+                xaxis: { ...darkLayout.xaxis, title: 'Epoch' },
+                yaxis: { ...darkLayout.yaxis, title: 'AUC' },
+                legend: { font: { color: '#e2e2e5' } }
+            }, {responsive: true});
+
+            // ===== Chart 8: Feature Correlation Heatmap =====
+            const corr = dist.correlation;
+            Plotly.newPlot('chart-correlation', [{
+                z: corr.matrix,
+                x: corr.labels,
+                y: corr.labels,
+                type: 'heatmap',
+                colorscale: [
+                    [0, '#0c0e11'], [0.25, '#1a1c1e'], [0.4, '#054a77'],
+                    [0.5, '#333537'], [0.6, '#EF9F27'], [0.75, '#D4537E'],
+                    [1, '#E24B4A']
+                ],
+                zmin: -1, zmax: 1,
+                text: corr.matrix.map(row => row.map(v => v.toFixed(2))),
+                hoverinfo: 'text',
+                showscale: true,
+                colorbar: { tickfont: { color: '#e2e2e5' } }
+            }], {
+                ...darkLayout,
+                margin: { t: 30, b: 100, l: 100, r: 30 },
+                xaxis: { ...darkLayout.xaxis, tickangle: -45 },
+                yaxis: { ...darkLayout.yaxis, autorange: 'reversed' }
+            }, {responsive: true});
+
+            // ===== Confusion Matrices Grid (All Models) =====
+            const cmGrid = document.getElementById('cm-grid');
+            cmGrid.innerHTML = '';
+            const modelNames = { xgb: 'XGBoost', rf: 'Random Forest', lr: 'Logistic Regression', nn: 'Neural Network' };
+            for (const key of ['xgb', 'rf', 'lr', 'nn']) {
+                const cm = perf.confusion_matrices[key];
+                if (!cm) continue;
+                const card = document.createElement('div');
+                card.className = 'glass-card p-md rounded-xl space-y-sm';
+                card.innerHTML = `
+                    <h4 class="font-label-lg text-label-lg text-on-surface text-center border-b border-outline-variant pb-xs">${modelNames[key]}</h4>
+                    <div class="grid grid-cols-2 gap-xs text-center text-xs">
+                        <div class="bg-surface-container p-sm rounded border border-outline-variant">
+                            <div class="text-on-surface-variant">TN</div>
+                            <div class="text-headline-sm font-bold text-status-success">${cm.tn.toLocaleString()}</div>
+                        </div>
+                        <div class="bg-surface-container p-sm rounded border border-outline-variant">
+                            <div class="text-on-surface-variant">FP</div>
+                            <div class="text-headline-sm font-bold text-accent-coral">${cm.fp.toLocaleString()}</div>
+                        </div>
+                        <div class="bg-surface-container p-sm rounded border border-outline-variant">
+                            <div class="text-on-surface-variant">FN</div>
+                            <div class="text-headline-sm font-bold text-status-danger">${cm.fn.toLocaleString()}</div>
+                        </div>
+                        <div class="bg-surface-container p-sm rounded border border-outline-variant border-l-2 border-l-status-success">
+                            <div class="text-on-surface-variant">TP</div>
+                            <div class="text-headline-sm font-bold text-status-success">${cm.tp.toLocaleString()}</div>
+                        </div>
+                    </div>
+                `;
+                cmGrid.appendChild(card);
+            }
+
+            // Load Table
+            loadTableRows();
+            datasetStatsLoaded = true;
+        } catch (e) {
+            console.error("Error loading visual analytics:", e);
+        }
+    }
+
+    // Dataset explorer table paging
+    let currentTableOffset = 0;
+    async function loadTableRows() {
+        const tbody = document.getElementById('dataset-table-body');
+        tbody.innerHTML = `<tr><td colspan="10" class="p-lg text-center text-on-surface-variant">Loading data rows...</td></tr>`;
+        
+        try {
+            const res = await fetch(`/api/dataset-sample?limit=15&offset=${currentTableOffset}`);
+            const data = await res.json();
+            
+            if (data.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="10" class="p-lg text-center text-on-surface-variant">No rows found</td></tr>`;
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            data.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-surface-variant transition-colors';
+                
+                const classBadge = row.Class === 1 
+                    ? '<span class="bg-status-danger/20 text-status-danger px-sm py-xs rounded text-xs font-bold uppercase">Fraud</span>'
+                    : '<span class="bg-status-success/20 text-status-success px-sm py-xs rounded text-xs font-bold uppercase">Genuine</span>';
+                
+                tr.innerHTML = `
+                    <td class="p-md font-mono">${row.Time.toFixed(0)}</td>
+                    <td class="p-md font-semibold font-mono">$${row.Amount.toFixed(2)}</td>
+                    <td class="p-md font-mono text-xs text-on-surface-variant">${row.V1.toFixed(4)}</td>
+                    <td class="p-md font-mono text-xs text-on-surface-variant">${row.V2.toFixed(4)}</td>
+                    <td class="p-md font-mono text-xs text-on-surface-variant">${row.V3.toFixed(4)}</td>
+                    <td class="p-md font-mono text-xs text-on-surface-variant">${row.V4.toFixed(4)}</td>
+                    <td class="p-md font-mono text-xs text-on-surface-variant">${row.V5.toFixed(4)}</td>
+                    <td class="p-md font-mono text-xs text-on-surface-variant">${row.V10.toFixed(4)}</td>
+                    <td class="p-md font-mono text-xs text-on-surface-variant">${row.V14.toFixed(4)}</td>
+                    <td class="p-md">${classBadge}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            document.getElementById('table-page-info').textContent = `Showing rows ${currentTableOffset + 1} - ${currentTableOffset + data.length}`;
+        } catch (e) {
+            tbody.innerHTML = `<tr><td colspan="10" class="p-lg text-center text-status-danger">Error loading data.</td></tr>`;
+        }
+    }
+
+    function changePageOffset(val) {
+        currentTableOffset = Math.max(0, currentTableOffset + val);
+        loadTableRows();
+    }
+
+    // Performance Stats & Plotly Chart Loading
+    let performanceStatsLoaded = false;
+    let performanceMetadata = null;
+    let confusionMatrices = null;
+
+    async function loadPerformanceStats() {
+        if (performanceStatsLoaded) return;
+        try {
+            const res = await fetch('/api/model-performance');
+            const data = await res.json();
+            
+            performanceMetadata = data.metadata;
+            confusionMatrices = data.confusion_matrices;
+            
+            // Plot ROC curves overlay
+            const rocTraces = [];
+            const colors = {
+                xgb: '#c6c5d4',
+                rf: '#D4537E',
+                lr: '#EF9F27',
+                nn: '#7F77DD'
+            };
+            const labels = {
+                xgb: 'XGBoost (AUC: 0.7981)',
+                rf: 'Random Forest (AUC: 0.7375)',
+                lr: 'Logistic Regression (AUC: 0.6130)',
+                nn: 'Neural Network (AUC: 0.5378)'
+            };
+
+            for (const key in data.roc_data) {
+                rocTraces.push({
+                    x: data.roc_data[key].fpr,
+                    y: data.roc_data[key].tpr,
+                    type: 'scatter',
+                    mode: 'lines',
+                    name: labels[key],
+                    line: { color: colors[key], width: 3 }
+                });
+            }
+            
+            // 45 degree reference
+            rocTraces.push({
+                x: [0, 1],
+                y: [0, 1],
+                type: 'scatter',
+                mode: 'lines',
+                name: 'Random Guess',
+                line: { color: '#6B7280', dash: 'dash' }
+            });
+
+            const rocLayout = {
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                font: { color: '#e2e2e5', family: 'Inter' },
+                xaxis: { gridcolor: '#47464c', title: 'False Positive Rate' },
+                yaxis: { gridcolor: '#47464c', title: 'True Positive Rate' },
+                margin: { t: 20, b: 40, l: 60, r: 20 },
+                legend: { x: 0.6, y: 0.2 }
+            };
+            Plotly.newPlot('chart-roc-curve', rocTraces, rocLayout, {responsive: true});
+
+            // Feature Importance
+            if (data.feature_importance && data.feature_importance.xgb) {
+                const featData = data.feature_importance.xgb;
+                const featTrace = [{
+                    x: featData.importances.reverse(),
+                    y: featData.features.reverse(),
+                    type: 'bar',
+                    orientation: 'h',
+                    marker: { color: '#7F77DD' }
+                }];
+                const featLayout = {
+                    paper_bgcolor: 'rgba(0,0,0,0)',
+                    plot_bgcolor: 'rgba(0,0,0,0)',
+                    font: { color: '#e2e2e5', family: 'Inter' },
+                    xaxis: { gridcolor: '#47464c', title: 'Gini Importance' },
+                    yaxis: { margin: { l: 150 } },
+                    margin: { t: 20, b: 40, l: 100, r: 20 }
+                };
+                Plotly.newPlot('chart-feature-imp', featTrace, featLayout, {responsive: true});
+            }
+
+            renderConfusionMatrix();
+            performanceStatsLoaded = true;
+        } catch (e) {
+            console.error("Error loading performance stats:", e);
+        }
+    }
+
+    function renderConfusionMatrix() {
+        if (!confusionMatrices) return;
+        const selectedModel = document.getElementById('cm-model-select').value;
+        const cm = confusionMatrices[selectedModel];
+        if (!cm) return;
+        
+        document.getElementById('cm-tn').textContent = cm.tn.toLocaleString();
+        document.getElementById('cm-fp').textContent = cm.fp.toLocaleString();
+        document.getElementById('cm-fn').textContent = cm.fn.toLocaleString();
+        document.getElementById('cm-tp').textContent = cm.tp.toLocaleString();
+    }
+
+    // Live Prediction Form & Preset changing logic
+    async function handlePresetChange() {
+        const val = document.getElementById('predict-preset').value;
+        if (val === 'Manual Input') {
+            document.getElementById('predict-time').value = 0;
+            document.getElementById('predict-amount').value = 1.0;
+            for (let i = 1; i <= 28; i++) {
+                document.getElementById(`v${i}`).value = 0.0;
+            }
+            return;
+        }
+        
+        try {
+            const res = await fetch('/api/dataset-sample?limit=250');
+            const data = await res.json();
+            let sample = null;
+            if (val === 'Genuine Transaction Sample') {
+                sample = data.find(r => r.Class === 0);
+            } else if (val === 'Fraudulent Transaction Sample') {
+                sample = data.find(r => r.Class === 1);
+            }
+            
+            if (sample) {
+                document.getElementById('predict-time').value = sample.Time;
+                document.getElementById('predict-amount').value = sample.Amount;
+                for (let i = 1; i <= 28; i++) {
+                    document.getElementById(`v${i}`).value = sample[`V${i}`].toFixed(6);
+                }
+            }
+        } catch (e) {
+            console.error("Error fetching preset sample:", e);
+        }
+    }
+
+    async function runPrediction() {
+        const timeVal = parseFloat(document.getElementById('predict-time').value) || 0;
+        const amountVal = parseFloat(document.getElementById('predict-amount').value) || 0;
+        const modelName = document.getElementById('predict-model').value;
+        
+        const payload = {
+            Time: timeVal,
+            Amount: amountVal,
+            model: modelName
+        };
+        
+        for (let i = 1; i <= 28; i++) {
+            payload[`V${i}`] = parseFloat(document.getElementById(`v${i}`).value) || 0.0;
+        }
+
+        // Show loading state
+        document.getElementById('state-initial').classList.add('hidden');
+        document.getElementById('state-result').classList.add('hidden');
+        document.getElementById('state-loading').classList.remove('hidden');
+
+        try {
+            const res = await fetch('/api/predict', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+
+            // Enforce minimum 800ms loading skeleton delay
+            setTimeout(() => {
+                document.getElementById('state-loading').classList.add('hidden');
+                document.getElementById('state-result').classList.remove('hidden');
+                
+                const badge = document.getElementById('result-badge');
+                const badgeIcon = document.getElementById('result-badge-icon');
+                const badgeText = document.getElementById('result-badge-text');
+                const desc = document.getElementById('result-desc');
+                const alertBox = document.getElementById('result-genai-alert');
+                
+                const isFraud = data.prediction === 1;
+                const probPct = data.probability * 100;
+                
+                if (isFraud) {
+                    badge.className = 'px-lg py-md rounded-xl text-headline-md font-black uppercase inline-flex items-center gap-sm bg-status-danger/20 text-status-danger border border-status-danger/40 animate-pulse';
+                    badgeIcon.textContent = 'gavel';
+                    badgeText.textContent = 'Fraud Detected';
+                    desc.innerHTML = `Transaction flagged as <strong>HIGH RISK</strong>. Neural inference probability matches fraud signatures.`;
+                    alertBox.classList.remove('hidden');
+                } else {
+                    badge.className = 'px-lg py-md rounded-xl text-headline-md font-black uppercase inline-flex items-center gap-sm bg-status-success/20 text-status-success border border-status-success/40';
+                    badgeIcon.textContent = 'verified_user';
+                    badgeText.textContent = 'Genuine Verdict';
+                    desc.innerHTML = `Transaction classified as <strong>LOW RISK</strong>. Features match standard user behaviors.`;
+                    alertBox.classList.add('hidden');
+                }
+                
+                // Draw dynamic gauge
+                const gaugeData = [
+                    {
+                        domain: { x: [0, 1], y: [0, 1] },
+                        value: probPct,
+                        title: { text: "Fraud Likelihood (%)", font: { size: 14 } },
+                        type: "indicator",
+                        mode: "gauge+number",
+                        gauge: {
+                            axis: { range: [0, 100], tickcolor: "#919096" },
+                            bar: { color: isFraud ? "#E24B4A" : "#5DCAA5" },
+                            bgcolor: "#333537",
+                            borderwidth: 0,
+                            steps: [
+                                { range: [0, 30], color: "rgba(93, 202, 165, 0.15)" },
+                                { range: [30, 70], color: "rgba(239, 159, 39, 0.15)" },
+                                { range: [70, 100], color: "rgba(226, 75, 74, 0.15)" }
+                            ],
+                        }
+                    }
+                ];
+                
+                const gaugeLayout = {
+                    width: 280,
+                    height: 180,
+                    margin: { t: 30, b: 20, l: 30, r: 30 },
+                    paper_bgcolor: "rgba(0,0,0,0)",
+                    font: { color: "#e2e2e5", family: "Inter" }
+                };
+                
+                Plotly.newPlot('result-gauge', gaugeData, gaugeLayout, {staticPlot: true});
+            }, 800);
+            
+        } catch (e) {
+            console.error(e);
+            document.getElementById('state-loading').classList.add('hidden');
+            document.getElementById('state-initial').classList.remove('hidden');
+            alert("Error running inference model. Verify backend logs.");
+        }
+    }
+
+    // Batch Prediction Logic
+    let currentBatchRows = [];
+    async function runBatchPrediction() {
+        const fileInput = document.getElementById('batch-file-input');
+        if (!fileInput.files || fileInput.files.length === 0) {
+            alert("Please select a CSV file first.");
+            return;
+        }
+        
+        const file = fileInput.files[0];
+        const modelName = document.getElementById('batch-model').value;
+        
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('model', modelName);
+        
+        document.getElementById('batch-loader').classList.remove('hidden');
+        document.getElementById('batch-results-container').classList.add('hidden');
+        
+        try {
+            const res = await fetch('/api/predict-batch', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
+            
+            document.getElementById('batch-loader').classList.add('hidden');
+            if (data.error) {
+                alert("Error: " + data.error);
+                return;
+            }
+            
+            document.getElementById('batch-results-container').classList.remove('hidden');
+            
+            // Set stats
+            document.getElementById('batch-stat-total').textContent = data.total_transactions.toLocaleString();
+            document.getElementById('batch-stat-genuine').textContent = data.genuine_count.toLocaleString();
+            document.getElementById('batch-stat-fraud').textContent = data.fraud_count.toLocaleString();
+            document.getElementById('batch-stat-rate').textContent = data.fraud_rate.toFixed(2) + '%';
+            
+            currentBatchRows = data.full_rows;
+            
+            // Plot bulk statistics
+            const pieData = [{
+                values: [data.genuine_count, data.fraud_count],
+                labels: ['Genuine', 'Fraud'],
+                type: 'pie',
+                marker: { colors: ['#5DCAA5', '#E24B4A'] }
+            }];
+            const pieLayout = {
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                font: { color: '#e2e2e5', family: 'Inter' },
+                margin: { t: 20, b: 20, l: 20, r: 20 },
+                height: 280
+            };
+            Plotly.newPlot('chart-batch-pie', pieData, pieLayout, {responsive: true});
+            
+            // Histogram of probabilities
+            const probs = data.full_rows.map(r => r["Fraud Probability (%)"]);
+            const histData = [{
+                x: probs,
+                type: 'histogram',
+                marker: { color: '#7F77DD' },
+                nbinsx: 20
+            }];
+            const histLayout = {
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                font: { color: '#e2e2e5', family: 'Inter' },
+                xaxis: { gridcolor: '#47464c', title: 'Probability (%)' },
+                yaxis: { gridcolor: '#47464c', title: 'Record Count' },
+                margin: { t: 20, b: 40, l: 50, r: 20 },
+                height: 280
+            };
+            Plotly.newPlot('chart-batch-hist', histData, histLayout, {responsive: true});
+            
+            // Fill preview table
+            const tbody = document.getElementById('batch-table-body');
+            tbody.innerHTML = '';
+            data.preview_rows.forEach(row => {
+                const tr = document.createElement('tr');
+                const isFraud = row.Prediction === 'Fraud';
+                const classBadge = isFraud 
+                    ? '<span class="bg-status-danger/20 text-status-danger px-sm py-xs rounded text-xs font-bold uppercase">Fraud</span>'
+                    : '<span class="bg-status-success/20 text-status-success px-sm py-xs rounded text-xs font-bold uppercase">Genuine</span>';
+                
+                tr.innerHTML = `
+                    <td class="p-md font-mono">${row.Time.toFixed(0)}</td>
+                    <td class="p-md font-semibold font-mono">$${row.Amount.toFixed(2)}</td>
+                    <td class="p-md font-mono">${row["Fraud Probability (%)"].toFixed(2)}%</td>
+                    <td class="p-md">${classBadge}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+        } catch (e) {
+            document.getElementById('batch-loader').classList.add('hidden');
+            alert("Connection error running bulk prediction.");
+            console.error(e);
+        }
+    }
+
+    function downloadBatchPredictions() {
+        if (currentBatchRows.length === 0) return;
+        
+        // Build CSV content
+        const headers = Object.keys(currentBatchRows[0]).join(',');
+        const rows = currentBatchRows.map(row => {
+            return Object.values(row).map(v => typeof v === 'number' ? v : `"${v}"`).join(',');
+        });
+        const csvContent = "data:text/csv;charset=utf-8," + [headers, ...rows].join('\n');
+        
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "batch_fraud_predictions.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // Hero stats count-up initialization
+    document.addEventListener('DOMContentLoaded', () => {
+        // Animate counter elements
+        const animateCounters = () => {
+            document.querySelectorAll('.counter').forEach(el => {
+                const target = parseFloat(el.getAttribute('data-target'));
+                const decimal = parseInt(el.getAttribute('data-decimal')) || 0;
+                const duration = 1200;
+                const startTime = performance.now();
+                
+                const update = (now) => {
+                    const elapsed = now - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const easeProgress = 1 - Math.pow(1 - progress, 3); // Ease out cubic
+                    
+                    let current = easeProgress * target;
+                    
+                    if (decimal > 0) {
+                        el.textContent = current.toFixed(decimal);
+                    } else {
+                        el.textContent = Math.floor(current).toLocaleString();
+                    }
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(update);
+                    } else {
+                        if (decimal > 0) {
+                            el.textContent = target.toFixed(decimal);
+                        } else {
+                            el.textContent = target.toLocaleString();
+                        }
+                    }
+                };
+                requestAnimationFrame(update);
+            });
+        };
+        
+        animateCounters();
+        
+        // Set up highlights mouse tracking
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mousemove', e => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    });
+</script>
+
+<style>
+    .glass-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(400px circle at var(--mouse-x, 0) var(--mouse-y, 0), rgba(198, 197, 212, 0.03), transparent 40%);
+        pointer-events: none;
+        z-index: 1;
+    }
+</style>
+</body>
+</html>
