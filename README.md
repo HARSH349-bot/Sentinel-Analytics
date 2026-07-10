@@ -65,21 +65,9 @@ flowchart TD
 | Random Forest | 98.76% | 0.00% | 0.7375 | Alternative |
 | Logistic Regression | 80.16% | 1.24% | 0.6130 | Baseline |
 
----
-
-## ⚙️ REST API Endpoints
-
-The Flask backend exposes the following endpoints:
-
-*   `GET /` - Serves the web-app frontend dashboard.
-*   `GET /api/stats` - Returns overall dataset sizes, fraud counts, and global average amounts.
-*   `GET /api/dataset-sample` - Returns paginated transaction records from the demo dataset for explorer tables.
-*   `GET /api/dataset-distributions` - Computes and returns histogram coordinates (Amount/Time), correlation matrices, and model comparison histories.
-*   `GET /api/model-performance` - Supplies evaluation metrics, ROC curve coordinates, and model confusion matrices.
-*   `POST /api/predict` - Runs real-time inference on a custom JSON transaction payload.
-*   `POST /api/predict-batch` - Runs batch risk classification on an uploaded CSV file.
 
 ---
+
 
 ## 🚀 Quick Start Guide
 
@@ -110,7 +98,7 @@ http://127.0.0.1:5000/
 ## 📂 Project Structure
 
 ```
-Sentinel-Analytics-Club/
+Sentinel-Analytics/
 ├── app.py                      # Flask Server (API endpoints & model loading)
 ├── app_streamlit.py            # Streamlit Legacy Backup
 ├── creditcard_demo.csv          # Validation dataset sample (8,040 rows)
