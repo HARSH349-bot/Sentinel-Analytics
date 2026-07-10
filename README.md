@@ -28,7 +28,11 @@ flowchart TD
     end
 
     subgraph "Web App Backend (Flask)"
-        SaveXGB & SaveRF & SaveLR & SaveNN & Scalers --> Flask["Flask Web Server (app.py)"]
+        SaveXGB --> Flask["Flask Web Server (app.py)"]
+        SaveRF --> Flask["Flask Web Server (app.py)"]
+        SaveLR --> Flask["Flask Web Server (app.py)"]
+        SaveNN --> Flask["Flask Web Server (app.py)"]
+        Scalers --> Flask["Flask Web Server (app.py)"]
         CC --> Flask
     end
 
